@@ -280,6 +280,7 @@ main {
   display: inline-block;
   font-size: 0.85rem;
   margin-left: 0.25rem;
+  /* transition: transform 0.3s ease-out; 0.3s ease-out means 0.3 seconds with an ease-out timing function */
 }
 
 .challenge-item-details.expanded .challenge-item-details-icon {
@@ -313,7 +314,19 @@ main {
   width: 30rem;
   max-width: 90%;
   z-index: 10;
+  /* animation: slide-up-fade-in 0.3s ease-out forwards; forwards means the element will keep the styles from the last keyframe after the animation ends. */
 }
+
+/* @keyframes slide-up-fade-in { slide-up-fade-in is the name of the animation. It is meant to be descriptive of what the animation does. */
+  /* 0% { */
+    /* transform: translateY(30px);translateY moves the element up or down on the y-axis. In this case, we're moving it up by 30px. */
+    /* opacity: 0; opacity 0 means the element is invisible. */
+  /* } */
+  /* 100% {
+    transform: translateY(0px);
+    opacity: 1;
+  } */
+/* } */
 
 .modal h2 {
   margin-top: 0;

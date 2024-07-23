@@ -1,4 +1,5 @@
 import { useContext, useRef, useState } from 'react';
+import { motion, stagger, useAnimate } from 'framer-motion';
 
 import { ChallengesContext } from '../store/challenges-context.jsx';
 import Modal from './Modal.jsx';
@@ -8,6 +9,8 @@ export default function NewChallenge({ onDone }) {
   const title = useRef();
   const description = useRef();
   const deadline = useRef();
+
+  const [scope, animate] = useAnimate();
 
   const [selectedImage, setSelectedImage] = useState(null);
   const { addChallenge } = useContext(ChallengesContext);
@@ -31,6 +34,9 @@ export default function NewChallenge({ onDone }) {
       !challenge.deadline.trim() ||
       !challenge.image
     ) {
+      animate('input, textarea',
+        { x: [-10, 0, 10, 0], y: [-5, 0, 5, 0] },
+        { type: 'spring', transition: { duration: 1 }, delay: stagger(0.05) });
       return;
     }
 
@@ -40,7 +46,7 @@ export default function NewChallenge({ onDone }) {
 
   return (
     <Modal title="New Challenge" onClose={onDone}>
-      <form id="new-challenge" onSubmit={handleSubmit}>
+      <form id="new-challenge" onSubmit={handleSubmit} ref={scope}>
         <p>
           <label htmlFor="title">Title</label>
           <input ref={title} type="text" name="title" id="title" />
@@ -56,17 +62,28 @@ export default function NewChallenge({ onDone }) {
           <input ref={deadline} type="date" name="deadline" id="deadline" />
         </p>
 
-        <ul id="new-challenge-images">
+        <motion.ul
+          variants={{
+            visible: { transition: { staggerChildren: 0.05 } }// staggerChildren: 0.05 faz com que cada filho tenha um delay de 0.05s em relação ao anterior
+          }}
+          id="new-challenge-images"
+        >
           {images.map((image) => (
-            <li
+            <motion.li
+              variants={{
+                hidden: { opacity: 0, scale: 0.5, transition: { duration: 0.2 } },
+                visible: { opacity: 1, scale: [0.8, 1.3, 1] }
+              }}
+              //exit={{ opacity: 1, scale: 0.9 }}// the exit from the component father is overwritten by the exit from the child component
+              transition={{ type: 'spring' }}
               key={image.alt}
               onClick={() => handleSelectImage(image)}
               className={selectedImage === image ? 'selected' : undefined}
             >
               <img {...image} />
-            </li>
+            </motion.li>
           ))}
-        </ul>
+        </motion.ul>
 
         <p className="new-challenge-actions">
           <button type="button" onClick={onDone}>
