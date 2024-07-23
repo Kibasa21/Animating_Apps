@@ -1,24 +1,40 @@
 import { Link } from 'react-router-dom';
+import { motion, useScroll, useTransform } from 'framer-motion';
 
 import cityImg from '../assets/city.jpg';
 import heroImg from '../assets/hero.png';
 
 export default function WelcomePage() {
+  const { scrollY } = useScroll();//O useScroll é um hook que retorna o scrollY, que é a posição do scroll da página em pixels
+
+  const yCity = useTransform(scrollY, [0, 200], [0, -100]);//O useTransform é um hook que transforma um valor de entrada em um valor de saída, nesse caso, ele transforma a posição do scroll em pixels
+  const opacityCity = useTransform(scrollY, [0, 200, 300, 700], [1, 0.5, 0.5, 0]);//O useTransform é um hook que transforma um valor de entrada em um valor de saída, nesse caso, ele transforma a posição do scroll em opacidade
+  const yHero = useTransform(scrollY, [0, 200], [0, -200]);//O useTransform é um hook que transforma um valor de entrada em um valor de saída, nesse caso, ele transforma a posição do scroll em pixels, a posição do scroll é multiplicada por -1 para que a imagem se mova para cima
+  const opacityHero = useTransform(scrollY, [0, 200, 300, 700], [1, 0.5, 0.5, 0]);//O useTransform é um hook que transforma um valor de entrada em um valor de saída, nesse caso, ele transforma a posição do scroll em opacidade
+  const yText = useTransform(scrollY, [0, 200, 300, 500], [0, 50, 50, 300]);//O useTransform é um hook que transforma um valor de entrada em um valor de saída, nesse caso, ele transforma a posição do scroll em pixels
+  const scaleText = useTransform(scrollY, [0, 300], [1, 1.5]);//O useTransform é um hook que transforma um valor de entrada em um valor de saída, nesse caso, ele transforma a posição do scroll em escala
+
   return (
     <>
       <header id="welcome-header">
-        <div id="welcome-header-content">
+        <motion.div id="welcome-header-content" style={{scale: scaleText, y: yText}}>
           <h1>Ready for a challenge?</h1>
           <Link id="cta-link" to="/challenges">
             Get Started
           </Link>
-        </div>
-        <img
+        </motion.div>
+        <motion.img
+          style={{ opacity: opacityCity, y: yCity }}//The difference between style and animate is that style is used for CSS properties that don't have a defined animation, while animate is used for properties that have a defined animation
           src={cityImg}
           alt="A city skyline touched by sunlight"
           id="city-image"
         />
-        <img src={heroImg} alt="A superhero wearing a cape" id="hero-image" />
+        <motion.img
+          style={{ opacity: opacityHero, y: yHero }}//The difference between style and animate is that style is used for CSS properties that don't have a defined animation, while animate is used for properties that have a defined animation
+          src={heroImg}
+          alt="A superhero wearing a cape"
+          id="hero-image"
+        />
       </header>
       <main id="welcome-content">
         <section>
